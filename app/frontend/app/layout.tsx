@@ -25,19 +25,19 @@ export const metadata: Metadata = {
   authors: [{ name: "Gmin2", url: "https://github.com/Gmin2" }],
   creator: "Gmin2",
   publisher: "BlindBet",
-  metadataBase: new URL("https://blindbet.vercel.app"),
+  metadataBase: new URL("https://blindbet.xyz"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://blindbet.vercel.app",
+    url: "https://blindbet.xyz",
     title: "BlindBet - Confidential Prediction Markets",
     description: "The first fully confidential prediction market powered by Zama's fhEVM. Private betting with encrypted positions on-chain.",
     siteName: "BlindBet",
     images: [
       {
-        url: "/og-image.png",
+        url: "/logo.png",
         width: 1200,
-        height: 630,
+        height: 1200,
         alt: "BlindBet - Confidential Prediction Markets"
       }
     ]
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     title: "BlindBet - Confidential Prediction Markets",
     description: "The first fully confidential prediction market powered by Zama's fhEVM. Private betting with encrypted positions on-chain.",
     creator: "@Min2_gg",
-    images: ["/og-image.png"]
+    images: ["/logo.png"]
   },
   icons: {
     icon: "/logo.png",
