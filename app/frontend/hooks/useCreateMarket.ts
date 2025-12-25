@@ -99,6 +99,14 @@ export function useCreateMarket(): UseCreateMarketReturn {
 
       setLoading(false);
 
+      // Invalidate markets cache to show new market immediately
+      try {
+        await fetch('/api/markets?refresh=true');
+        console.log('Markets cache invalidated');
+      } catch (err) {
+        console.warn('Failed to invalidate markets cache:', err);
+      }
+
       return {
         marketAddress,
         marketId,

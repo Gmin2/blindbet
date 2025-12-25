@@ -78,14 +78,20 @@ export function useMarkets(refreshInterval: number = 120000): UseMarketsReturn {
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 
-  const fetchMarkets = useCallback(async () => {
+  const fetchMarkets = useCallback(async (forceRefresh = false) => {
     try {
-      console.log('[useMarkets] Fetching from API...');
+      console.log('[useMarkets] Fetching from API...', forceRefresh ? '(force refresh)' : '');
       setLoading(true);
       setError(null);
 
+      // Clear localStorage cache on force refresh
+      if (forceRefresh && typeof window !== 'undefined') {
+        localStorage.removeItem(CACHE_KEY);
+      }
+
       // Call backend API instead of blockchain directly
-      const response = await fetch('/api/markets');
+      const url = forceRefresh ? '/api/markets?refresh=true' : '/api/markets';
+      const response = await fetch(url);
       const data = await response.json();
 
       if (!response.ok) {

@@ -133,14 +133,22 @@ export async function GET(request: Request) {
     const now = Date.now();
     const cacheAge = now - lastFetchTime;
 
-    // Return cached data if less than 5 minutes old
-    if (cachedData && cacheAge < CACHE_DURATION) {
+    // Check for refresh parameter to bypass cache
+    const { searchParams } = new URL(request.url);
+    const forceRefresh = searchParams.get('refresh') === 'true';
+
+    // Return cached data if less than 10 minutes old (unless force refresh)
+    if (cachedData && cacheAge < CACHE_DURATION && !forceRefresh) {
       console.log('[API] Returning cached data (age:', Math.round(cacheAge / 1000), 'seconds)');
       return NextResponse.json({
         markets: cachedData,
         cached: true,
         cacheAge: Math.round(cacheAge / 1000),
       });
+    }
+
+    if (forceRefresh) {
+      console.log('[API] Force refresh requested, bypassing cache');
     }
 
     // Fetch fresh data
