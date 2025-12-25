@@ -1,119 +1,69 @@
 # BlindBet
 
-A fully confidential prediction market platform built on Zama's fhEVM, enabling truly private betting where positions,
-amounts, and outcomes remain encrypted until settlement.
+A fully confidential prediction market platform built on Zama's fhEVM, enabling truly private betting where positions, amounts, and outcomes remain encrypted until settlement.
 
-## What Makes BlindBet Different
+## The Problem with Current Prediction Markets
 
-### Privacy-First Architecture
+Traditional prediction markets suffer from a fundamental transparency paradox. On platforms like Polymarket, Augur, and Gnosis, large traders can observe incoming bets in the mempool and front-run them, manipulating odds before transactions confirm. Market makers see the exact distribution of positions, allowing them to adjust spreads unfairly. The public nature of positions creates a chilling effect where users avoid placing large bets or taking contrarian positions for fear of signaling their beliefs to competitors.
 
-Unlike traditional prediction markets where all bets are publicly visible, BlindBet leverages Fully Homomorphic
-Encryption (FHE) to ensure:
+### Traditional Markets vs BlindBet
 
-- **Hidden bet amounts**: No one can see how much you're wagering
-- **Private positions**: Your Yes/No stance remains encrypted
-- **Confidential liquidity pools**: Total pool sizes are hidden, preventing market manipulation
-- **Front-running protection**: Encrypted order flow eliminates MEV attacks
-- **Selective disclosure**: You control who sees your positions and when
+| Aspect | Traditional Markets | BlindBet |
+|--------|-------------------|----------|
+| **Position Visibility** | Public - Anyone can see all positions | Encrypted - Only you see your positions |
+| **Front-running** | Vulnerable to mempool monitoring | Impossible - No data to front-run |
+| **Market Manipulation** | Whales can see and manipulate order flow | Protected - Distribution stays hidden |
+| **Privacy** | Zero - All bets publicly visible | Complete - FHE encryption on-chain |
+| **Fair Competition** | Favors sophisticated MEV actors | Level playing field for all participants |
 
-### Traditional Prediction Markets vs BlindBet
+## How Zama's fhEVM Enables True Privacy
 
-| Feature             | Traditional Markets   | BlindBet             |
-| ------------------- | --------------------- | -------------------- |
-| Bet visibility      | Public                | Encrypted            |
-| Position tracking   | On-chain, transparent | FHE-encrypted        |
-| Market manipulation | Vulnerable to whales  | Protected by privacy |
-| Front-running risk  | High                  | Eliminated           |
-| Privacy             | None                  | Complete             |
+BlindBet leverages Zama's Fully Homomorphic Encryption (FHE) technology to create the first truly confidential prediction market. Unlike zero-knowledge proofs which only verify computations, FHE allows computations directly on encrypted data. Smart contracts can add encrypted bet amounts, compare encrypted positions, and calculate encrypted payouts without ever seeing plaintext values.
 
-## Key Features
+### FHE vs Zero-Knowledge Proofs
 
-### For Users
+| Feature | Zero-Knowledge Proofs | Zama's FHE (BlindBet) |
+|---------|----------------------|---------------------|
+| **Computation** | Verify results without inputs | Compute directly on encrypted data |
+| **Data Privacy** | Inputs remain hidden | Data never decrypted on-chain |
+| **Smart Contract Support** | Limited operations | Full arithmetic, comparisons, conditionals |
+| **Decryption** | Not applicable | User-specific keys via oracle |
+| **Performance** | Proof generation overhead | Native encrypted operations |
 
-- **Create prediction markets** on any binary outcome
-- **Place encrypted bets** with full privacy guarantees
-- **View your positions** through secure decryption
-- **Track transaction history** across all markets
-- **Claim winnings** after market resolution
+## Platform Capabilities
 
-### For Developers
+| Capability | Description |
+|------------|-------------|
+| **Market Creation** | Create binary outcome markets on any topic |
+| **Encrypted Betting** | Place fully encrypted bets with guaranteed privacy |
+| **Position Viewing** | Secure decryption mechanism for personal positions only |
+| **Automated Payouts** | Smart contract-based winner distribution after resolution |
+| **Transaction History** | Complete history across all markets with confidentiality maintained |
+| **Dual-Signature Transfers** | Separate patterns for user-initiated and contract transfers |
+| **ACL Permissions** | Granular access control for encrypted data |
+| **Oracle Integration** | Seamless integration with Zama's decryption oracle |
 
-- **fhEVM smart contracts** with confidential state management
-- **Dual-signature pattern** for secure token transfers
-- **ACL permission system** for granular access control
-- **Decryption oracle integration** for settlement
-- **Server-side caching** to optimize RPC usage
+## System Architecture
 
-## Technical Architecture
+![Architecture](public/archi.png)
 
-### Smart Contracts
-
-```
-contracts/
-├── core/
-│   ├── BlindBetFactory.sol      # Market deployment factory
-│   └── BlindBetMarket.sol       # Core market logic
-├── tokens/
-│   ├── ConfidentialERC20.sol    # FHE token base
-│   └── ConfidentialUSDC.sol     # Payment token
-├── libraries/
-│   ├── MarketLib.sol            # Market state management
-│   ├── PayoutCalculator.sol     # Winner calculations
-│   └── FeeManager.sol           # Fee handling
-├── abstract/
-│   └── MarketBase.sol           # Base functionality
-└── interfaces/
-    ├── IBlindBetMarket.sol
-    ├── IConfidentialERC20.sol
-    └── IBlindBetFactory.sol
-```
-
-### Frontend Application
-
-```
-app/frontend/
-├── app/
-│   ├── (marketing)/             # Landing pages
-│   ├── markets/                 # Market browsing
-│   ├── market/[id]/             # Market details
-│   ├── create/                  # Market creation
-│   ├── portfolio/               # User dashboard
-│   └── api/                     # Backend API routes
-├── components/
-│   ├── market/                  # Market components
-│   ├── ui/                      # UI primitives
-│   └── wallet-connect.tsx       # Wallet integration
-├── hooks/
-│   ├── useMarkets.ts
-│   ├── usePlaceBet.ts
-│   ├── useUserPositions.ts
-│   └── useTransactionHistory.ts
-└── lib/
-    ├── contracts.ts             # Contract ABIs & addresses
-    └── const.ts                 # Configuration
-```
+The BlindBet architecture consists of three primary layers: the client-side encryption layer where users generate encrypted bets using the fhEVM SDK, the smart contract layer where all market logic executes on encrypted data, and the oracle layer that handles secure decryption requests for position viewing and market settlement. This three-tier design ensures that sensitive data never exists in plaintext on-chain while maintaining full functionality and verifiability.
 
 ## Technology Stack
 
-### Blockchain & Encryption
-
-- **fhEVM**: Zama's Fully Homomorphic Encryption Virtual Machine
-- **Solidity**: Smart contract development
-- **Hardhat**: Development environment and testing
-- **Ethers.js v6**: Blockchain interaction
-
-### Frontend
-
-- **Next.js 15**: React framework with App Router
-- **TypeScript**: Type-safe development
-- **Tailwind CSS**: Utility-first styling
-- **shadcn/ui**: UI component library
-
-### Infrastructure
-
-- **Zama Sepolia Testnet**: Deployment network
-- **Server-side caching**: Optimized RPC usage
-- **Rate limit handling**: Graceful degradation
+| Category | Technology | Purpose |
+|----------|-----------|---------|
+| **Blockchain** | fhEVM | Zama's Fully Homomorphic Encryption Virtual Machine |
+| | Solidity | Smart contract development |
+| | Hardhat | Development environment and testing |
+| | Ethers.js v6 | Blockchain interaction |
+| **Frontend** | Next.js 15 | React framework with App Router |
+| | TypeScript | Type-safe development |
+| | Tailwind CSS | Utility-first styling |
+| | shadcn/ui | UI component library |
+| **Infrastructure** | Zama Sepolia Testnet | Deployment network |
+| | Server-side caching | Optimized RPC usage |
+| | Rate limit handling | Graceful degradation |
 
 ## Getting Started
 
@@ -221,21 +171,6 @@ function transfer(address to, externalEuint64 encryptedAmount, bytes calldata in
 function transferEncrypted(address to, euint64 amount) external returns (bool);
 ```
 
-## API Routes
-
-### Server-Side Endpoints
-
-- **GET /api/markets** - Fetch all markets with caching
-- **GET /api/market/[id]** - Get specific market details
-- **GET /api/transactions?address=0x...** - User transaction history
-- **GET /api/positions?address=0x...** - User market positions
-
-All endpoints implement:
-
-- 10-minute server-side caching
-- Rate limit protection
-- Graceful error handling
-
 ## Key Innovations
 
 ### 1. Confidential State Management
@@ -299,23 +234,27 @@ npx hardhat test test/core/BlindBetMarket.test.ts
 REPORT_GAS=true npm test
 ```
 
-Test coverage:
+### Test Coverage
 
-- 197 passing tests
-- 6 pending (FHEVM plugin limitations)
-- 0 failing tests
+| Status | Count | Description |
+|--------|-------|-------------|
+| Passing | 197 | All core functionality verified |
+| Pending | 6 | FHEVM plugin limitations |
+| Failing | 0 | Production ready |
 
 ### Test Categories
 
-- Token operations
-- Market creation and validation
-- Betting functionality
-- Market locking and resolution
-- Claims and payouts
-- Factory operations
-- Fee management
-- Security edge cases
-- Full integration flows
+| Category | Description |
+|----------|-------------|
+| Token operations | ERC20 transfers and approvals |
+| Market creation and validation | Input validation and market initialization |
+| Betting functionality | Encrypted bet placement and position tracking |
+| Market locking and resolution | State transitions and oracle integration |
+| Claims and payouts | Winner calculations and distributions |
+| Factory operations | Market deployment and management |
+| Fee management | Protocol fee calculations |
+| Security edge cases | Attack vectors and edge cases |
+| Full integration flows | End-to-end market lifecycle |
 
 ## Security Considerations
 
@@ -339,40 +278,33 @@ Test coverage:
 
 ### Contract Addresses (Zama Sepolia)
 
-```
-BlindBetFactory: 0xd3fca2bd814176e983667674ea1099d3b75c0bc7
-ConfidentialUSDC: 0x8af03bccc2994e191c7aef30a8ca90c47f0e1e8d
-```
-
-### Verification
-
-Contracts verified on Zama Sepolia Explorer:
-
-- Factory: [View on Explorer](https://sepolia.explorer.zama.ai/address/0xd3fca2bd814176e983667674ea1099d3b75c0bc7)
-- Token: [View on Explorer](https://sepolia.explorer.zama.ai/address/0x8af03bccc2994e191c7aef30a8ca90c47f0e1e8d)
+| Contract | Address | Explorer |
+|----------|---------|----------|
+| BlindBetFactory | `0xd3fca2bd814176e983667674ea1099d3b75c0bc7` | [View on Explorer](https://sepolia.explorer.zama.ai/address/0xd3fca2bd814176e983667674ea1099d3b75c0bc7) |
+| ConfidentialUSDC | `0x8af03bccc2994e191c7aef30a8ca90c47f0e1e8d` | [View on Explorer](https://sepolia.explorer.zama.ai/address/0x8af03bccc2994e191c7aef30a8ca90c47f0e1e8d) |
 
 ## Roadmap
 
-### Phase 1: Core Functionality (Complete)
+### Phase 1: Core Functionality
 
-- Basic market creation and betting
-- Encrypted position tracking
-- Market resolution and claims
-- Frontend integration
+- [X] Basic market creation and betting
+- [X] Encrypted position tracking
+- [X] Market resolution and claims
+- [X] Frontend integration
 
-### Phase 2: Enhanced Features (In Progress)
+### Phase 2: Enhanced Features
 
-- Automated Market Maker (AMM)
-- Liquidity provision
-- Partial position closing
-- Advanced analytics
+- [ ] Automated Market Maker (AMM)
+- [ ] Liquidity provision
+- [ ] Partial position closing
+- [ ] Advanced analytics
 
-### Phase 3: Advanced Privacy (Planned)
+### Phase 3: Advanced Privacy
 
-- Multi-outcome markets
-- Conditional betting
-- Reputation system
-- Order book system
+- [ ] Multi-outcome markets
+- [ ] Conditional betting
+- [ ] Reputation system
+- [ ] Order book system
 
 ## Contributing
 
@@ -388,13 +320,15 @@ We welcome contributions! Please follow these guidelines:
 
 We use [Conventional Commits](https://www.conventionalcommits.org/):
 
-- `feat:` - New feature
-- `fix:` - Bug fix
-- `docs:` - Documentation changes
-- `style:` - Code style changes (formatting, etc.)
-- `refactor:` - Code refactoring
-- `test:` - Adding or updating tests
-- `chore:` - Maintenance tasks
+| Prefix | Purpose |
+|--------|---------|
+| `feat:` | New feature |
+| `fix:` | Bug fix |
+| `docs:` | Documentation changes |
+| `style:` | Code style changes (formatting, etc.) |
+| `refactor:` | Code refactoring |
+| `test:` | Adding or updating tests |
+| `chore:` | Maintenance tasks |
 
 ## License
 
@@ -406,21 +340,7 @@ This project is licensed under the BSD-3-Clause-Clear License - see the [LICENSE
 - **X**: [@Min2_gg](https://x.com/Min2_gg)
 - **LinkedIn**: [mintu-gogoi](https://linkedin.com/in/mintu-gogoi)
 
-## Documentation
-
-For detailed documentation, see:
-
-- [Smart Contract Documentation](./SMART_CONTRACT_SUMMARY.md)
-- [Frontend Development Guide](./FRONTEND_DEVELOPMENT_GUIDE.md)
-- [Deployment Guide](./DEPLOYMENT_GUIDE.md)
-
-## Acknowledgments
-
-- **Zama** for the fhEVM technology
-- **Hardhat** for the development environment
-- **Next.js** team for the excellent framework
-- **shadcn/ui** for the beautiful components
 
 ---
 
-Built with privacy at the core. Powered by Zama fhEVM.
+Built with privacy at the core by Gmin2. Powered by Zama fhEVM.
