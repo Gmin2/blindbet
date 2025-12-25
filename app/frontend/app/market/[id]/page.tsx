@@ -88,7 +88,6 @@ export default function MarketPage({ params }: { params: Promise<{ id: string }>
                         {/* Left Column: Market Info & Chart */}
                         <div className="lg:col-span-8 space-y-8">
                             <MarketHeader market={{
-                                id: Number(market.id),
                                 question: market.question,
                                 volume: "Hidden", // Encrypted
                                 ending: new Date(Number(market.bettingDeadline) * 1000).toLocaleDateString(),

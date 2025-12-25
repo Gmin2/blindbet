@@ -70,6 +70,11 @@ export function usePlaceBet(): UsePlaceBetReturn {
 
       // Get provider and signer
       console.log('[usePlaceBet] Getting provider and signer...');
+
+      if (!window.ethereum) {
+        throw new Error('No Web3 wallet detected');
+      }
+
       const provider = new BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const userAddress = await signer.getAddress();

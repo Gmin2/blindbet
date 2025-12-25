@@ -37,6 +37,11 @@ export function MyPosition({ marketId, marketAddress }: MyPositionProps) {
 
       try {
         setLoading(true)
+
+        if (!window.ethereum) {
+          throw new Error('No Web3 wallet detected')
+        }
+
         const provider = new BrowserProvider(window.ethereum)
         const signer = await provider.getSigner()
 
@@ -72,6 +77,10 @@ export function MyPosition({ marketId, marketAddress }: MyPositionProps) {
     setIsDecrypting(true)
 
     try {
+      if (!window.ethereum) {
+        throw new Error('No Web3 wallet detected')
+      }
+
       const provider = new BrowserProvider(window.ethereum)
       const signer = await provider.getSigner()
       const userAddress = await signer.getAddress() // Get checksummed address

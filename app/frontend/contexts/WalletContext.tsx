@@ -170,7 +170,11 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (typeof window === 'undefined' || !window.ethereum) return;
 
-    const ethereum = window.ethereum as Eip1193Provider;
+    // Type assertion for ethereum with event emitter methods
+    const ethereum = window.ethereum as Eip1193Provider & {
+      on?: (event: string, callback: (...args: any[]) => void) => void;
+      removeListener?: (event: string, callback: (...args: any[]) => void) => void;
+    };
 
     const handleAccountsChanged = (accounts: string[]) => {
       console.log('[WalletContext] Accounts changed:', accounts);

@@ -40,6 +40,10 @@ export function useCreateMarket(): UseCreateMarketReturn {
       }
 
       // Get provider and signer
+      if (!window.ethereum) {
+        throw new Error('No Web3 wallet detected');
+      }
+
       const provider = new BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 

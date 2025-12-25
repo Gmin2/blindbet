@@ -165,11 +165,14 @@ export async function GET(request: Request) {
 
         // Check if transaction was sent by this user
         if (tx.from.toLowerCase() === address.toLowerCase()) {
+          // Cast event as EventLog to access args
+          const eventLog = event as ethers.EventLog;
+
           allTransactions.push({
             id: `${event.transactionHash}-${event.index}`,
             type: 'MARKET_CREATED',
-            marketId: Number(event.args?.[0] || 0),
-            marketQuestion: String(event.args?.[2] || 'Unknown Market'), // Question is 3rd arg (index 2)
+            marketId: Number(eventLog.args?.[0] || 0),
+            marketQuestion: String(eventLog.args?.[2] || 'Unknown Market'), // Question is 3rd arg (index 2)
             timestamp: block.timestamp,
             txHash: event.transactionHash,
             status: 'success',
